@@ -16,9 +16,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url=uri("https://jitpack.io") }
     }
 }
 
 rootProject.name = "CommonTemplate"
 include(":app")
- 
+include(":retrofit_net")
+include(":frame")
