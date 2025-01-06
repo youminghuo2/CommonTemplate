@@ -1,5 +1,8 @@
 package com.example.retrofit_net.manager
 
+import com.dylanc.longan.Logger
+import com.dylanc.longan.logDebug
+import com.example.frame.utils.CommonUtils
 import com.example.retrofit_net.interceptor.HeaderInterceptor
 import com.example.retrofit_net.interceptor.TokenInterceptor
 import okhttp3.OkHttpClient
@@ -12,7 +15,7 @@ object RetrofitFactory {
     fun createRetrofit(baseUrl: String, token: String): Retrofit {
         val loggingInterceptor = HttpLoggingInterceptor { message ->
             // 打印日志到控制台（可以自定义日志输出方式）
-            println("RetrofitLog: $message")
+            Logger(CommonUtils.getCurrentClassName()).logDebug("RetrofitLog:$$message")
         }.apply {
             level = HttpLoggingInterceptor.Level.BODY // 打印完整的请求和响应
         }

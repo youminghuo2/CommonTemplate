@@ -2,6 +2,7 @@ package com.example.retrofit_net.base
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -21,9 +22,9 @@ open class BaseViewBindingActivity<VB : ViewBinding,VM : BaseViewModel> : AppCom
     View.OnClickListener {
 
      private var loading: LoadingDialog? = null
-     private val viewModel by lazyViewModels()
+     protected val viewModel by lazyViewModels()
 
-    private val binding by lazy {
+    protected val binding by lazy {
         getViewBinding()
     }
 
@@ -94,7 +95,7 @@ open class BaseViewBindingActivity<VB : ViewBinding,VM : BaseViewModel> : AppCom
 
     @MainThread
     inline fun lazyViewModels(): Lazy<VM> {
-        val cls = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0] as Class<VM>
+        val cls = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[1] as Class<VM>
         return ViewModelLazy(cls.kotlin, { viewModelStore }, { defaultViewModelProviderFactory })
     }
 

@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
+        android:text="sasasassassa"
         android:textColor="@android:color/white"
         android:textSize="12sp" />
 </androidx.appcompat.widget.LinearLayoutCompat>

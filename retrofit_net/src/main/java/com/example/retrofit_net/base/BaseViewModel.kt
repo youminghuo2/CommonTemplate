@@ -18,7 +18,7 @@ open class BaseViewModel :ViewModel(){
     val showLoadingDialog: MutableLiveData<DialogBean> by lazy { MutableLiveData<DialogBean>() }
     val errorMsgLiveData by lazy { MutableLiveData<String>() }
 
-    fun showLoading(strMessage: String = "正在请求数据") {
+   private fun showLoading(strMessage: String = "正在请求数据") {
         val showBean = showLoadingDialog.value ?: DialogBean(strMessage, true)
         showBean.isShow = true
         showBean.msg = strMessage
@@ -26,7 +26,7 @@ open class BaseViewModel :ViewModel(){
     }
 
     // 隐藏加载对话框
-    fun hideLoading() {
+   private fun hideLoading() {
         val showBean = showLoadingDialog.value ?: DialogBean("", true)
         showBean.isShow = false
         showLoadingDialog.postValue(showBean)

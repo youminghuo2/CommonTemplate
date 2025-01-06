@@ -38,13 +38,19 @@ android {
     buildFeatures {
         buildConfig = true
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
-
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
@@ -53,4 +59,7 @@ dependencies {
     implementation(project(":frame"))
     implementation(libs.longan)
     implementation(libs.datastorePreferences)
+    implementation(libs.viewmodel)
+    implementation(libs.liveData)
+    implementation(libs.activity.ktx)
 }

@@ -50,7 +50,7 @@ dependencies {
     implementation(libs.eventbus)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
-    implementation(libs.okhttp3)
+    implementation(libs.okhttp)
     implementation(libs.viewmodel)
     implementation(libs.liveData)
     implementation(libs.longan)
