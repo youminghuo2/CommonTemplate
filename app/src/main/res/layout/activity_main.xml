@@ -13,10 +13,16 @@
       android:padding="10dp">
 
       <com.google.android.material.button.MaterialButton
-          android:id="@+id/btn_interface"
+          android:id="@+id/btn_interface_login"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="调用接口" />
+          android:text="调用登录" />
+
+      <com.google.android.material.button.MaterialButton
+          android:id="@+id/btn_interface_term"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="调用学期" />
 
       <com.google.android.material.textview.MaterialTextView
           android:id="@+id/tv_interface"
