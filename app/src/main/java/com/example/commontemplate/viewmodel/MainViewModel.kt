@@ -29,6 +29,7 @@ class MainViewModel :BaseViewModel(){
                 when (resultState) {
                     is ResultState.Success -> {
                         // 处理成功的情况
+                        _termList.value= mutableListOf()   //flow只有在数据变化的时候，collect才收集，为此每次发送一个空的list让数据变化
                         _termList.value = resultState.data ?: mutableListOf()
                     }
                     is ResultState.Error -> {

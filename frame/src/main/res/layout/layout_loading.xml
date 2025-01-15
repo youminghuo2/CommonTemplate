@@ -18,7 +18,7 @@
         android:layout_gravity="center"
         android:indeterminateDrawable="@drawable/progressbar_shape" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/txt_loading_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

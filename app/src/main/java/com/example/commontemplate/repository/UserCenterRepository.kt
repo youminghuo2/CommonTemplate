@@ -15,7 +15,7 @@ class UserCenterRepository: BaseRepository() {
     suspend fun getLoginInfo():Flow<ResultState<LoginEntity>>{
         return requestResult {
             val psd="ylx08100810"
-            ApiManager.api(UserCenterApi::class.java).getLoginInfo("TCH_APP","1.7.2",psd.encryptMD5(),"testOp01")
+            ApiManager.api(UserCenterApi::class.java).getLoginInfo("TCH_APP","1.7.2",psd.encryptMD5(),"testOp03")
         }
     }
 
