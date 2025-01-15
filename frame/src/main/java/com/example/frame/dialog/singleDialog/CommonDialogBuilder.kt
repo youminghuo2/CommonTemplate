@@ -1,6 +1,8 @@
 package com.example.frame.dialog.singleDialog
 
+import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
+import com.dylanc.longan.dial
 
 class CommonDialogBuilder(private val activity: AppCompatActivity, private val useInstance:Boolean=false) {
 
@@ -30,22 +32,28 @@ class CommonDialogBuilder(private val activity: AppCompatActivity, private val u
         return this
     }
 
-    fun setNegativeButton(text: String,textColor:Int?=null,textSize:Float?=null,backgroundTint: Int?=null,cornerRadius: Int?=null, strokeColor: Int?=null, strokeWidth: Int?=null, listener: CommonDialogFragment.OnClickListener?=null): CommonDialogBuilder {
-        dialog.setNegativeButton(text,textColor,textSize,backgroundTint,cornerRadius,strokeColor,strokeWidth,listener)
+    fun setNegativeButton(text: String,textColor:Int?=null,textSize:Float?=null,backgroundTint: Int?=null,cornerRadius: Int?=null, strokeColor: Int?=null, strokeWidth: Int?=null, cancelable: Boolean?=null, listener: (Dialog?) -> Unit = { dialog -> dialog?.dismiss()}): CommonDialogBuilder {
+        cancelable?.let {
+            dialog.dialogCancelable = it
+        }
+        dialog.setNegativeButton(text,textColor,textSize,backgroundTint,cornerRadius,strokeColor,strokeWidth){dialog->
+            listener.invoke(dialog)
+        }
         return this
     }
 
     fun setPositiveButton(
-        text: String,textColor:Int?=null,textSize:Float?=null,backgroundTint: Int?=null,cornerRadius: Int?=null, strokeColor: Int?=null, strokeWidth: Int?=null, listener: CommonDialogFragment.OnClickListener?=null
+        text: String,textColor:Int?=null,textSize:Float?=null,backgroundTint: Int?=null,cornerRadius: Int?=null, strokeColor: Int?=null, strokeWidth: Int?=null,cancelable: Boolean?=null, listener: ((Dialog?) -> Unit)?=null
     ): CommonDialogBuilder {
-        dialog.setPositiveButton(text,textColor,textSize,backgroundTint,cornerRadius,strokeColor,strokeWidth,listener)
+        cancelable?.let {
+            dialog.dialogCancelable = it
+        }
+        dialog.setPositiveButton(text,textColor,textSize,backgroundTint,cornerRadius,strokeColor,strokeWidth){dialog->
+            listener?.invoke(dialog)
+        }
         return this
     }
 
-    fun setCancelable(text: String, backgroundTint: Int?, cornerRadius: Int?, strokeColor: Int?, strokeWidth: Int, listener: CommonDialogFragment.OnClickListener, cancelable: Boolean): CommonDialogBuilder {
-        dialog.dialogCancelable = cancelable
-        return this
-    }
 
     fun show(tag: String = "") {
         dialog.show(activity.supportFragmentManager, "")

@@ -166,11 +166,12 @@ class CommonDialogFragment : DialogFragment() {
         }
 
         binding.btnPositive.setOnClickListener {
-            positiveButtonListener?.onClick(dialog) ?: kotlin.run { }
-
+//            positiveButtonListener?.onClick(dialog) ?: kotlin.run { }
+            negativeButtonListener?.invoke(dialog)
         }
         binding.btnNegative.setOnClickListener {
-            negativeButtonListener?.onClick(dialog) ?: kotlin.run { dismiss() }
+//            negativeButtonListener?.onClick(dialog) ?: kotlin.run { dismiss() }
+            negativeButtonListener?.invoke(dialog)
         }
         dialog?.setCancelable(dialogCancelable)
     }
@@ -253,11 +254,14 @@ class CommonDialogFragment : DialogFragment() {
 
     fun isDialogShowing() = dialog?.isShowing
 
-    interface OnClickListener {
-        fun onClick(dialog: Dialog?)
-    }
+//    interface OnClickListener {
+//        fun onClick(dialog: Dialog?)
+//    }
 
     fun setDialogCenter(center: Boolean) {
         this.isCenter = center
     }
 }
+
+// 1. 将接口改为高阶函数类型
+typealias OnClickListener = (Dialog?) -> Unit

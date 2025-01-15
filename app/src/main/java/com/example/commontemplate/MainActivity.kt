@@ -106,14 +106,10 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
                             .setTitle("标题")
                             .setMessage("正文")
                             .setPositiveButton(
-                                text = "确定",
-                                listener = object : CommonDialogFragment.OnClickListener {
-                                    override fun onClick(dialog: Dialog?) {
-                                        dialog?.dismiss()
-                                        // 暂停任务
-                                        isTaskPaused = true
-                                    }
-                                }).show()
+                                text = "确定"
+                            ) { dialog ->
+                                dialog?.dismiss()
+                            }.show()
                     }
                     // 延时 1 秒
                     delay(1000)
@@ -136,6 +132,7 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
                     //授权
                     toast("已经授予权限")
                 }
+
                 false -> {
                     requestPermissionLauncher.launch(Manifest.permission.CAMERA)
                 }
@@ -143,50 +140,70 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
         }
 
         //申请多个权限
-       binding.btnRequestPermissions.doOnClick(clickIntervals = 1000){
-           val permissionList = listOf(
-               PermissionListEntity(
-                   listOf(
-                       Manifest.permission.BLUETOOTH_SCAN,
-                       Manifest.permission.BLUETOOTH_ADVERTISE,
-                       Manifest.permission.BLUETOOTH_CONNECT
-                   ), PermissionEntity("蓝牙权限", "当您在我们的产品中使蓝牙",R.drawable.ic_perm_bluetooth)
-               ),
-               PermissionListEntity(
-                   listOf(Manifest.permission.CAMERA),
-                   PermissionEntity("相机权限", "当您在我们的产品中使用数据上传功能时",R.drawable.ic_perm_camera)
-               ),
-               PermissionListEntity(
-                   listOf(
-                       Manifest.permission.ACCESS_FINE_LOCATION,
-                       Manifest.permission.ACCESS_COARSE_LOCATION
-                   ), PermissionEntity("地理位置权限", "当您在我们的产品中使用地理位置权限",R.drawable.ic_perm_location)
-               ),
-               PermissionListEntity(
-                   listOf(
-                       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                           Manifest.permission.READ_MEDIA_IMAGES else Manifest.permission.READ_EXTERNAL_STORAGE,
-                   ), PermissionEntity("媒体权限", "当您在我们的产品中使用媒体权限",R.drawable.ic_perm_storage)
-               ))
+        binding.btnRequestPermissions.doOnClick(clickIntervals = 1000) {
+            val permissionList = listOf(
+                PermissionListEntity(
+                    listOf(
+                        Manifest.permission.BLUETOOTH_SCAN,
+                        Manifest.permission.BLUETOOTH_ADVERTISE,
+                        Manifest.permission.BLUETOOTH_CONNECT
+                    ),
+                    PermissionEntity(
+                        "蓝牙权限",
+                        "当您在我们的产品中使蓝牙",
+                        R.drawable.ic_perm_bluetooth
+                    )
+                ),
+                PermissionListEntity(
+                    listOf(Manifest.permission.CAMERA),
+                    PermissionEntity(
+                        "相机权限",
+                        "当您在我们的产品中使用数据上传功能时",
+                        R.drawable.ic_perm_camera
+                    )
+                ),
+                PermissionListEntity(
+                    listOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ),
+                    PermissionEntity(
+                        "地理位置权限",
+                        "当您在我们的产品中使用地理位置权限",
+                        R.drawable.ic_perm_location
+                    )
+                ),
+                PermissionListEntity(
+                    listOf(
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                            Manifest.permission.READ_MEDIA_IMAGES else Manifest.permission.READ_EXTERNAL_STORAGE,
+                    ),
+                    PermissionEntity(
+                        "媒体权限",
+                        "当您在我们的产品中使用媒体权限",
+                        R.drawable.ic_perm_storage
+                    )
+                )
+            )
 
-           val multipleList = CommonUtils.checkSelfPermissionMultiple(
-               context,
-               permissionList
-           )
-           if (multipleList.isNotEmpty()) {
-               val (explainList, requireList) = processPermissions(multipleList)
+            val multipleList = CommonUtils.checkSelfPermissionMultiple(
+                context,
+                permissionList
+            )
+            if (multipleList.isNotEmpty()) {
+                val (explainList, requireList) = processPermissions(multipleList)
 
-               val msg = explainList.joinToString(separator = ",") { it.title }
-               dialogMsg = "请在设置中开启${msg}，以正常使用App功能"
+                val msg = explainList.joinToString(separator = ",") { it.title }
+                dialogMsg = "请在设置中开启${msg}，以正常使用App功能"
 
-               showExplain(supportFragmentManager, explainList)
+                showExplain(supportFragmentManager, explainList)
 
-               multiPermissionLauncher.launch(
-                   requireList.toTypedArray()
-               )
-           }
+                multiPermissionLauncher.launch(
+                    requireList.toTypedArray()
+                )
+            }
 
-       }
+        }
 
     }
 
@@ -254,12 +271,12 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
                     .setMessage("权限申请")
                     .setCenter(true)
                     .setNegativeButton("关闭")
-                    .setPositiveButton("确定", listener = object : CommonDialogFragment.OnClickListener {
-                        override fun onClick(dialog: Dialog?) {
-                            dialog?.dismiss()
-                            launchAppSettings()
-                        }
-                    })
+                    .setPositiveButton(
+                        "确定",
+                    ) { dialog ->
+                        dialog?.dismiss()
+                        launchAppSettings()
+                    }
                     .show()
                 //可以在Flutter弹窗
 //                FlutterDialogFragment(
