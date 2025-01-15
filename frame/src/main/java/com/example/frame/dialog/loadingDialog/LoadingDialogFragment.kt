@@ -2,7 +2,7 @@ package com.example.frame.dialog.loadingDialog
 
 import android.annotation.SuppressLint
 import com.example.frame.databinding.FragmentLoadingDialogBinding
-import com.example.retrofit_net.base.BaseViewBindingDialogFragment
+import com.example.frame.base.BaseViewBindingDialogFragment
 
 /**
  * 自定义LoadingFragment

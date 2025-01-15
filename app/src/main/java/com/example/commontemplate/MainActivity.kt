@@ -31,7 +31,8 @@ import com.example.frame.entity.PermissionListEntity
 import com.example.frame.storage.dataStore
 import com.example.frame.utils.CommonUtils
 import com.example.frame.utils.CommonUtils.processPermissions
-import com.example.retrofit_net.base.BaseViewBindingActivity
+import com.example.frame.base.BaseViewBindingActivity
+import com.example.frame.dialog.singleDialog.CommonDialogFragment
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
@@ -103,11 +104,16 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
                         CommonDialogBuilder(this@MainActivity, true)
                             .setTitle("标题")
                             .setMessage("正文")
+                            .setNegativeButton("取消")
                             .setPositiveButton(
-                                text = "确定"
-                            ) { dialog ->
-                                dialog?.dismiss()
-                            }.show()
+                                text = "确定",
+                                listener = object : CommonDialogFragment.OnClickListener {
+                                    override fun onClick(dialog: Dialog?) {
+                                        dialog?.dismiss()
+                                        // 暂停任务
+                                        isTaskPaused = true
+                                    }
+                                }).show()
                     }
                     // 延时 1 秒
                     delay(1000)
@@ -119,6 +125,13 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
         binding.btnCommonDialog.doOnClick(clickIntervals = 500) {
             CommonDialogBuilder(this@MainActivity)
                 .setTitle("标题", titleColor = Color.parseColor("#5197ff"))
+                .setNegativeButton("取消")
+                .setPositiveButton("确定", listener = object : CommonDialogFragment.OnClickListener {
+                    override fun onClick(dialog: Dialog?) {
+                        dialog?.dismiss()
+                    }
+
+                })
                 .setMessage("正文").show()
         }
 
@@ -227,7 +240,7 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
                 loadingDialog!!.show(supportFragmentManager, "")
             }else{
                 loadingDialog?.dismiss()
-
+                loadingDialog=null
             }
         }
 
@@ -297,12 +310,12 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
                     .setMessage("权限申请")
                     .setCenter(true)
                     .setNegativeButton("关闭")
-                    .setPositiveButton(
-                        "确定",
-                    ) { dialog ->
-                        dialog?.dismiss()
-                        launchAppSettings()
-                    }
+                    .setPositiveButton("确定", listener = object : CommonDialogFragment.OnClickListener {
+                        override fun onClick(dialog: Dialog?) {
+                            dialog?.dismiss()
+                            launchAppSettings()
+                        }
+                    })
                     .show()
 
             }

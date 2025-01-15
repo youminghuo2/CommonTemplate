@@ -1,4 +1,4 @@
-package com.example.retrofit_net.base
+package com.example.frame.base
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -26,7 +26,7 @@ abstract class BaseViewBindingDialogFragment<VB : ViewBinding> : AppCompatDialog
         val vbClass = (javaClass.genericSuperclass as ParameterizedType)
             .actualTypeArguments[0] as Class<*>
         val method = vbClass.getDeclaredMethod("inflate", LayoutInflater::class.java)
-        _binding = method.invoke(null, layoutInflater, null, false) as VB // 注意这里
+        _binding = method.invoke(this, inflater) as VB
         return binding.root
     }
 

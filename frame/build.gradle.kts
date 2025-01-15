@@ -48,4 +48,5 @@ dependencies {
     implementation(libs.datastorePreferences)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.lottie)
 }

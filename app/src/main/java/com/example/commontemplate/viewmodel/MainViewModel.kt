@@ -3,12 +3,12 @@ package com.example.commontemplate.viewmodel
 import com.example.commontemplate.entity.LoginEntity
 import com.example.commontemplate.entity.TermEntity
 import com.example.commontemplate.repository.UserCenterRepository
-import com.example.retrofit_net.base.BaseViewModel
+import com.example.frame.base.BaseViewModel
 import com.example.retrofit_net.base.ResultState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class MainViewModel :BaseViewModel(){
+class MainViewModel : BaseViewModel(){
     private val repository by lazy { UserCenterRepository() }
 
     // 私有的 MutableStateFlow，用于在内部更新 UI 状态,只有 ViewModel 或其他控制逻辑可以改变状态。
