@@ -6,11 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelLazy
 import androidx.viewbinding.ViewBinding
 import com.dylanc.longan.toast
-import com.example.frame.dialog.LoadingDialog
+import com.example.frame.dialog.loadingDialog.LoadingDialog
 import java.lang.reflect.ParameterizedType
 
 abstract class BaseViewBindingFragment<VB : ViewBinding, VM : BaseViewModel> : Fragment(), View.OnClickListener {

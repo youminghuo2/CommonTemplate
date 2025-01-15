@@ -4,10 +4,6 @@ import android.Manifest
 import android.app.Dialog
 import android.graphics.Color
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.widget.Toast
-import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -25,10 +21,11 @@ import com.dylanc.longan.toast
 import com.example.commontemplate.common.ComDaraStore
 import com.example.commontemplate.databinding.ActivityMainBinding
 import com.example.commontemplate.viewmodel.MainViewModel
+import com.example.frame.dialog.flutterDialog.FlutterDialogFragment
+import com.example.frame.dialog.loadingDialog.LoadingDialogFragment
 import com.example.frame.dialog.permissionDialog.PermissionExplainHelper.dismissExplain
 import com.example.frame.dialog.permissionDialog.PermissionExplainHelper.showExplain
 import com.example.frame.dialog.singleDialog.CommonDialogBuilder
-import com.example.frame.dialog.singleDialog.CommonDialogFragment
 import com.example.frame.entity.PermissionEntity
 import com.example.frame.entity.PermissionListEntity
 import com.example.frame.storage.dataStore
@@ -48,6 +45,7 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
     private var isTaskPaused = false // 用于暂停或恢复定时任务
     private val keyServerUrl = stringPreferencesKey(ComDaraStore.server_url)  //dataSore的key
     private var dialogMsg = "" //dialog提示
+    private var loadingDialog: LoadingDialogFragment? = null   //LoadingFragment弹窗
 
     override fun initView() {
         super.initView()
@@ -205,6 +203,34 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
 
         }
 
+        //flutter dialog弹窗
+        binding.btnFlutterDialog.doOnClick(clickIntervals = 500){
+                FlutterDialogFragment(
+                    "权限申请",
+                    dialogMsg,
+                    "取消",
+                    "确定",
+                    false,
+                    object : FlutterDialogFragment.OnClickListener {
+                        override fun onClick(dialog: Dialog?) {
+                            dialog?.dismiss()
+                            launchAppSettings()
+                        }
+                    }).show(supportFragmentManager, "")
+        }
+
+        //LoadingFragment弹窗
+        binding.btnLoadingDialog.doOnClick(clickIntervals = 500){
+            if (loadingDialog == null) {
+                loadingDialog = LoadingDialogFragment()
+                loadingDialog?.isCancelable = true
+                loadingDialog!!.show(supportFragmentManager, "")
+            }else{
+                loadingDialog?.dismiss()
+
+            }
+        }
+
     }
 
     override fun initObserver() {
@@ -278,19 +304,7 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
                         launchAppSettings()
                     }
                     .show()
-                //可以在Flutter弹窗
-//                FlutterDialogFragment(
-//                    "权限申请",
-//                    dialogMsg,
-//                    "取消",
-//                    "确定",
-//                    false,
-//                    object : FlutterDialogFragment.OnClickListener {
-//                        override fun onClick(dialog: Dialog?) {
-//                            dialog?.dismiss()
-//                            launchAppSettings()
-//                        }
-//                    }).show(supportFragmentManager, "")
+
             }
         }
 }

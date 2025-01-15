@@ -1,11 +1,8 @@
 package com.example.retrofit_net.base
 
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -14,7 +11,7 @@ import androidx.viewbinding.ViewBinding
 import com.dylanc.longan.Logger
 import com.dylanc.longan.logDebug
 import com.dylanc.longan.toast
-import com.example.frame.dialog.LoadingDialog
+import com.example.frame.dialog.loadingDialog.LoadingDialog
 import com.example.frame.utils.CommonUtils
 import java.lang.reflect.ParameterizedType
 
