@@ -47,7 +47,6 @@ class PermissionExplainDialog : DialogFragment() {
 
         binding.recyclerView.background = shapeBackground(
             fillColor = Color.parseColor("#EAF8FF"),
-            allCorner = 12f,
             borderColor = Color.parseColor("#80BCFF"),
             borderWidth = 0.5f
         )

@@ -88,7 +88,7 @@ object CommonUtils {
      *         requireList=mutableListOf<String>申请的权限列表
      */
     fun processPermissions(multipleList: List<PermissionListEntity>): Pair<List<PermissionEntity>, List<String>> {
-        val explainList=multipleList.map { PermissionEntity(it.dataList.title,it.dataList.msg) }
+        val explainList=multipleList.map { PermissionEntity(it.dataList.title,it.dataList.msg,it.dataList.icon) }
         val requireList=multipleList.flatMap { it.permission }
 
         return Pair(explainList, requireList)
