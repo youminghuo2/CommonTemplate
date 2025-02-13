@@ -12,14 +12,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.dylanc.longan.activityresult.launch
 import com.dylanc.longan.activityresult.registerForLaunchAppSettingsResult
+import com.dylanc.longan.activityresult.registerForRequestMultiplePermissionsResult
 import com.dylanc.longan.activityresult.registerForRequestPermissionResult
 import com.dylanc.longan.context
 import com.dylanc.longan.doOnClick
 import com.dylanc.longan.isPermissionGranted
 import com.dylanc.longan.launchAppSettings
+import com.dylanc.longan.startActivity
 import com.dylanc.longan.toast
 import com.example.commontemplate.common.ComDaraStore
 import com.example.commontemplate.databinding.ActivityMainBinding
+import com.example.commontemplate.flutter.FlutterViewActivity
 import com.example.commontemplate.viewmodel.MainViewModel
 import com.example.frame.dialog.flutterDialog.FlutterDialogFragment
 import com.example.frame.dialog.loadingDialog.LoadingDialogFragment
@@ -48,9 +51,6 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
     private var dialogMsg = "" //dialog提示
     private var loadingDialog: LoadingDialogFragment? = null   //LoadingFragment弹窗
 
-    override fun initView() {
-        super.initView()
-    }
 
     override fun initData() {
         super.initData()
@@ -244,6 +244,11 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
             }
         }
 
+        //跳转flutter功能页
+        binding.btnLoadingDialog.doOnClick(clickIntervals = 500){
+            startActivity<FlutterViewActivity>()
+        }
+
     }
 
     override fun initObserver() {
@@ -301,23 +306,31 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
     }
 
     //多个权限
-    private val multiPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { it ->
+    private val multiPermissionLauncher=registerForRequestMultiplePermissionsResult(
+        onAllGranted = {
+            // 已全部同意
+        },
+        onDenied = { deniedList ->
+            // 部分权限已拒绝且不再询问，可弹框引导用户到设置里授权该权限
+            // 弹框提示后可调用 launchAppSettings() 方法跳到设置页
             dismissExplain()
-            if (it.values.any { !it }) {
-                CommonDialogBuilder(this@MainActivity)
-                    .setTitle("权限申请", titleColor = Color.parseColor("#5197ff"))
-                    .setMessage("权限申请")
-                    .setCenter(true)
-                    .setNegativeButton("关闭")
-                    .setPositiveButton("确定", listener = object : CommonDialogFragment.OnClickListener {
-                        override fun onClick(dialog: Dialog?) {
-                            dialog?.dismiss()
-                            launchAppSettings()
-                        }
-                    })
-                    .show()
+            CommonDialogBuilder(this@MainActivity)
+                .setTitle("权限申请", titleColor = Color.parseColor("#5197ff"))
+                .setMessage("权限申请")
+                .setCenter(true)
+                .setNegativeButton("关闭")
+                .setPositiveButton("确定", listener = object : CommonDialogFragment.OnClickListener {
+                    override fun onClick(dialog: Dialog?) {
+                        dialog?.dismiss()
+                        com.dylanc.longan.launchAppSettings()
+                    }
+                })
+                .show()
 
-            }
-        }
+        },
+        onShowRequestRationale = { deniedList ->
+            // 部分权限拒绝了一次，可弹框解释为什么要获取该权限
+            // 弹框提示后可调用 requestDeniedPermissions() 方法请求拒绝的权限
+        })
+
 }

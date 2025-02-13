@@ -24,3 +24,4 @@ rootProject.name = "CommonTemplate"
 include(":app")
 include(":retrofit_net")
 include(":frame")
+include(":libUCrop")
