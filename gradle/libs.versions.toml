@@ -23,6 +23,7 @@ lottie="6.6.2"
 activity = "1.9.3"
 camerax_version="1.5.0-alpha03"
 cameraView = "1.4.1"
+alicloud_android_push="3.9.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +52,7 @@ camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "
 camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "camerax_version" }
 camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camerax_version" }
 androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
+alicloud-android-push= { group = "com.aliyun.ams", name = "alicloud-android-push", version.ref = "alicloud_android_push" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

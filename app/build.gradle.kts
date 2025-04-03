@@ -15,6 +15,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64"))
+        }
     }
 
     buildTypes {
@@ -41,6 +45,8 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+
 }
 
 dependencies {
@@ -63,4 +69,6 @@ dependencies {
     implementation(libs.viewmodel)
     implementation(libs.liveData)
     implementation(libs.activity.ktx)
+    implementation(libs.alicloud.android.push)
+
 }

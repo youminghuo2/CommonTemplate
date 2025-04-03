@@ -2,14 +2,16 @@ package com.example.commontemplate
 
 import android.Manifest
 import android.app.Dialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.graphics.Color
 import android.os.Build
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.dylanc.longan.Logger
 import com.dylanc.longan.activityresult.launch
 import com.dylanc.longan.activityresult.registerForLaunchAppSettingsResult
 import com.dylanc.longan.activityresult.registerForRequestMultiplePermissionsResult
@@ -18,30 +20,30 @@ import com.dylanc.longan.context
 import com.dylanc.longan.doOnClick
 import com.dylanc.longan.isPermissionGranted
 import com.dylanc.longan.launchAppSettings
+import com.dylanc.longan.logDebug
 import com.dylanc.longan.startActivity
 import com.dylanc.longan.toast
 import com.example.commontemplate.common.ComDaraStore
 import com.example.commontemplate.databinding.ActivityMainBinding
 import com.example.commontemplate.flutter.FlutterViewActivity
 import com.example.commontemplate.viewmodel.MainViewModel
+import com.example.frame.base.BaseViewBindingActivity
 import com.example.frame.dialog.flutterDialog.FlutterDialogFragment
 import com.example.frame.dialog.loadingDialog.LoadingDialogFragment
 import com.example.frame.dialog.permissionDialog.PermissionExplainHelper.dismissExplain
 import com.example.frame.dialog.permissionDialog.PermissionExplainHelper.showExplain
 import com.example.frame.dialog.singleDialog.CommonDialogBuilder
+import com.example.frame.dialog.singleDialog.CommonDialogFragment
 import com.example.frame.entity.PermissionEntity
 import com.example.frame.entity.PermissionListEntity
 import com.example.frame.storage.dataStore
 import com.example.frame.utils.CommonUtils
 import com.example.frame.utils.CommonUtils.processPermissions
-import com.example.frame.base.BaseViewBindingActivity
-import com.example.frame.dialog.singleDialog.CommonDialogFragment
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
-
 import kotlinx.coroutines.launch
 
 
@@ -54,6 +56,7 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
 
     override fun initData() {
         super.initData()
+        initNotificaitonChannel()
 
         //存储dataStore
         lifecycleScope.launch {
@@ -126,18 +129,20 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
             CommonDialogBuilder(this@MainActivity)
                 .setTitle("标题", titleColor = Color.parseColor("#5197ff"))
                 .setNegativeButton("取消")
-                .setPositiveButton("确定", listener = object : CommonDialogFragment.OnClickListener {
-                    override fun onClick(dialog: Dialog?) {
-                        dialog?.dismiss()
-                    }
+                .setPositiveButton(
+                    "确定",
+                    listener = object : CommonDialogFragment.OnClickListener {
+                        override fun onClick(dialog: Dialog?) {
+                            dialog?.dismiss()
+                        }
 
-                })
+                    })
                 .setMessage("正文").show()
         }
 
         //申请单个权限
         binding.btnRequestPermission.doOnClick(clickIntervals = 500) {
-            val permission = Manifest.permission.CAMERA
+            val permission = Manifest.permission.POST_NOTIFICATIONS
             when (isPermissionGranted(permission)) {
                 true -> {
                     //授权
@@ -145,7 +150,7 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
                 }
 
                 false -> {
-                    requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
             }
         }
@@ -217,35 +222,35 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
         }
 
         //flutter dialog弹窗
-        binding.btnFlutterDialog.doOnClick(clickIntervals = 500){
-                FlutterDialogFragment(
-                    "权限申请",
-                    dialogMsg,
-                    "取消",
-                    "确定",
-                    false,
-                    object : FlutterDialogFragment.OnClickListener {
-                        override fun onClick(dialog: Dialog?) {
-                            dialog?.dismiss()
-                            launchAppSettings()
-                        }
-                    }).show(supportFragmentManager, "")
+        binding.btnFlutterDialog.doOnClick(clickIntervals = 500) {
+            FlutterDialogFragment(
+                "权限申请",
+                dialogMsg,
+                "取消",
+                "确定",
+                false,
+                object : FlutterDialogFragment.OnClickListener {
+                    override fun onClick(dialog: Dialog?) {
+                        dialog?.dismiss()
+                        launchAppSettings()
+                    }
+                }).show(supportFragmentManager, "")
         }
 
         //LoadingFragment弹窗
-        binding.btnLoadingDialog.doOnClick(clickIntervals = 500){
+        binding.btnLoadingDialog.doOnClick(clickIntervals = 500) {
             if (loadingDialog == null) {
                 loadingDialog = LoadingDialogFragment()
                 loadingDialog?.isCancelable = true
                 loadingDialog!!.show(supportFragmentManager, "")
-            }else{
+            } else {
                 loadingDialog?.dismiss()
-                loadingDialog=null
+                loadingDialog = null
             }
         }
 
         //跳转flutter功能页
-        binding.btnLoadingDialog.doOnClick(clickIntervals = 500){
+        binding.btnLoadingDialog.doOnClick(clickIntervals = 500) {
             startActivity<FlutterViewActivity>()
         }
 
@@ -306,7 +311,7 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
     }
 
     //多个权限
-    private val multiPermissionLauncher=registerForRequestMultiplePermissionsResult(
+    private val multiPermissionLauncher = registerForRequestMultiplePermissionsResult(
         onAllGranted = {
             // 已全部同意
         },
@@ -319,12 +324,14 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
                 .setMessage("权限申请")
                 .setCenter(true)
                 .setNegativeButton("关闭")
-                .setPositiveButton("确定", listener = object : CommonDialogFragment.OnClickListener {
-                    override fun onClick(dialog: Dialog?) {
-                        dialog?.dismiss()
-                        com.dylanc.longan.launchAppSettings()
-                    }
-                })
+                .setPositiveButton(
+                    "确定",
+                    listener = object : CommonDialogFragment.OnClickListener {
+                        override fun onClick(dialog: Dialog?) {
+                            dialog?.dismiss()
+                            com.dylanc.longan.launchAppSettings()
+                        }
+                    })
                 .show()
 
         },
@@ -332,5 +339,46 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
             // 部分权限拒绝了一次，可弹框解释为什么要获取该权限
             // 弹框提示后可调用 requestDeniedPermissions() 方法请求拒绝的权限
         })
+
+    fun initNotificaitonChannel() {
+        val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+        // 通知渠道的id。
+        val id = "1"
+
+        // 用户可以看到的通知渠道的名字。
+        val name: CharSequence = "notification channel"
+
+        // 用户可以看到的通知渠道的描述。
+        val description = "notification description"
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val mChannel = NotificationChannel(id, name, importance)
+
+        // 配置通知渠道的属性。
+        mChannel.description = description
+
+        // 设置通知出现时的闪灯（如果Android设备支持的话）。
+        mChannel.enableLights(true)
+        mChannel.lightColor = Color.RED
+
+        // 设置通知出现时的震动（如果Android设备支持的话）。
+        mChannel.enableVibration(true)
+        mChannel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
+
+        // 最后在notificationmanager中创建该通知渠道。
+        mNotificationManager.createNotificationChannel(mChannel)
+
+        when (mNotificationManager.areNotificationsEnabled()) {
+            true -> {
+                // 已经授权
+                Logger(CommonUtils.getCurrentClassName()).logDebug("已经授权")
+            }
+
+            false -> {
+                Logger(CommonUtils.getCurrentClassName()).logDebug("error")
+            }
+        }
+    }
+
 
 }
