@@ -56,7 +56,6 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
 
     override fun initData() {
         super.initData()
-        initNotificaitonChannel()
 
         //存储dataStore
         lifecycleScope.launch {
@@ -340,45 +339,7 @@ class MainActivity : BaseViewBindingActivity<ActivityMainBinding, MainViewModel>
             // 弹框提示后可调用 requestDeniedPermissions() 方法请求拒绝的权限
         })
 
-    fun initNotificaitonChannel() {
-        val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-        // 通知渠道的id。
-        val id = "1"
-
-        // 用户可以看到的通知渠道的名字。
-        val name: CharSequence = "notification channel"
-
-        // 用户可以看到的通知渠道的描述。
-        val description = "notification description"
-        val importance = NotificationManager.IMPORTANCE_HIGH
-        val mChannel = NotificationChannel(id, name, importance)
-
-        // 配置通知渠道的属性。
-        mChannel.description = description
-
-        // 设置通知出现时的闪灯（如果Android设备支持的话）。
-        mChannel.enableLights(true)
-        mChannel.lightColor = Color.RED
-
-        // 设置通知出现时的震动（如果Android设备支持的话）。
-        mChannel.enableVibration(true)
-        mChannel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
-
-        // 最后在notificationmanager中创建该通知渠道。
-        mNotificationManager.createNotificationChannel(mChannel)
-
-        when (mNotificationManager.areNotificationsEnabled()) {
-            true -> {
-                // 已经授权
-                Logger(CommonUtils.getCurrentClassName()).logDebug("已经授权")
-            }
-
-            false -> {
-                Logger(CommonUtils.getCurrentClassName()).logDebug("error")
-            }
-        }
-    }
 
 
 }
